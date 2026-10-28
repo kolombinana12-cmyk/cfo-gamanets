@@ -1,0 +1,260 @@
+<title>CFO власного гаманця</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700;800&family=Caveat:wght@600;700&display=swap">
+<style>
+/* Layout: "kitchen table" — soft sage page, rounded modern blocks, one yellow sticky note per screen; hero = headline + a month's spending card */
+:root{
+  --bg:#F2F4EC; --surface:#FFFFFF; --soft:#E5EADB; --ink:#1D2B24; --muted:#56635A; --line:#D7DDCB;
+  --green:#2F5D4C; --on-green:#F4F6EE; --note:#FFE58A; --note-ink:#3A2F0B; --mark:#FFE07A; --warm:#E07B4F;
+  --display:'Unbounded', 'Arial Black', Arial, sans-serif; --body:'Manrope', 'Segoe UI', Arial, sans-serif; --hand:'Caveat', 'Comic Sans MS', cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141B17; --surface:#1C2520; --soft:#232E27; --ink:#EEF1E8; --muted:#A9B5AC; --line:#2F3B34;
+  --green:#7CC2A6; --on-green:#10201A; --note:#F2D46B; --note-ink:#2B2306; --mark:#6B5A1E; --warm:#F09A72; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141B17; --surface:#1C2520; --soft:#232E27; --ink:#EEF1E8; --muted:#A9B5AC; --line:#2F3B34;
+  --green:#7CC2A6; --on-green:#10201A; --note:#F2D46B; --note-ink:#2B2306; --mark:#6B5A1E; --warm:#F09A72; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;line-height:1.15;letter-spacing:-.01em}
+p{margin:0}
+.tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+.mark{background:linear-gradient(transparent 55%,var(--mark) 55%);padding:0 .1em}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--green);color:var(--on-green);font-weight:800;font-size:17px;padding:16px 30px;border-radius:16px;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 6px 0 -1px color-mix(in srgb,var(--green) 55%,#000)}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--warm);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+
+/* top bar */
+.top .wrap{display:flex;justify-content:space-between;align-items:center;padding-block:20px}
+.logo{font-family:var(--display);font-weight:700;font-size:16px}
+.logo span{color:var(--green)}
+.top a{color:var(--ink);font-weight:700;text-decoration:none;font-size:15px}
+
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding-block:28px 72px}
+.hero h1{font-size:clamp(32px,4.6vw,54px);margin-top:14px}
+.hero .lead{font-size:19px;color:var(--muted);margin-top:20px;max-width:38ch}
+.buy{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:30px}
+.price{font-family:var(--display);font-size:30px;font-weight:700}
+.price small{display:block;font-family:var(--body);font-size:14px;font-weight:600;color:var(--muted);line-height:1.3}
+
+.month{position:relative;background:var(--surface);border-radius:28px;padding:28px;border:1px solid var(--line);box-shadow:0 24px 48px -28px rgba(29,43,36,.35);min-width:0}
+.month h3{font-size:18px}
+.month .sub{color:var(--muted);font-size:14px;margin-top:4px}
+.bars{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px}
+.bars li{display:grid;grid-template-columns:120px 1fr 72px;gap:12px;align-items:center;font-size:15px}
+.bars .bar{height:12px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bars .bar i{display:block;height:100%;border-radius:99px;background:var(--green)}
+.bars .hot .bar i{background:var(--warm)}
+.bars .hot{font-weight:800}
+.bars b{text-align:right;font-variant-numeric:tabular-nums}
+.sum{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between;border-top:2px dashed var(--line);margin-top:18px;padding-top:14px;font-variant-numeric:tabular-nums;font-size:15px}
+.sum strong{font-size:17px}
+.sticky{position:relative;margin:18px -18px -8px auto;width:fit-content;max-width:250px;background:var(--note);color:var(--note-ink);font-family:var(--hand);font-size:24px;line-height:1.1;padding:16px 16px 18px;border-radius:4px 4px 18px 4px;transform:rotate(-4deg);box-shadow:0 10px 18px -10px rgba(0,0,0,.4)}
+
+/* sections */
+section.block .wrap{padding-block:64px}
+section.block h2{font-size:clamp(26px,3.4vw,38px);margin-top:10px;max-width:24ch}
+.intro{color:var(--muted);margin-top:14px;max-width:60ch}
+
+.pains{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}
+.pains div{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px}
+.pains .q{font-family:var(--hand);font-size:28px;line-height:1.1;color:var(--green)}
+.pains p{color:var(--muted);margin-top:10px;font-size:16px}
+
+.lessons{list-style:none;padding:0;margin:32px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.lessons li{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.lessons .n{width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--green);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:17px}
+.lessons h3{font-size:18px;line-height:1.25}
+.lessons p{color:var(--muted);font-size:15px}
+
+.format{background:var(--green);color:var(--on-green);border-radius:32px}
+.format .tag{color:var(--note)}
+.format .intro{color:color-mix(in srgb,var(--on-green) 80%,transparent)}
+.format-in{padding:48px clamp(20px,4vw,56px)}
+.kit{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:32px}
+.kit strong{font-family:var(--display);font-size:40px;display:block;line-height:1}
+.kit span{display:block;margin-top:8px;font-size:15px;color:color-mix(in srgb,var(--on-green) 82%,transparent)}
+
+.author{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:40px;align-items:center;margin-top:28px}
+.portrait{position:relative;max-width:100%}
+.portrait img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 18%;border-radius:28px}
+.portrait .sticky-s{position:absolute;left:-10px;bottom:22px;background:var(--note);color:var(--note-ink);font-family:var(--hand);font-size:24px;line-height:1.05;padding:10px 14px;border-radius:4px 4px 14px 4px;transform:rotate(-4deg);box-shadow:0 10px 18px -10px rgba(0,0,0,.4)}
+.author .who-txt{display:grid;gap:14px;max-width:56ch}
+.byline{display:flex;align-items:center;gap:12px;margin-top:22px;font-size:14px;color:var(--muted)}
+.byline img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.byline b{color:var(--ink)}
+.author p{color:var(--muted)}
+.author p b{color:var(--ink)}
+.creds{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.creds span{font-size:13px;font-weight:800;letter-spacing:.06em;background:var(--soft);border-radius:999px;padding:5px 14px}
+
+.faq{margin-top:26px;max-width:780px;display:grid;gap:10px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 22px}
+.faq summary{font-weight:800;cursor:pointer;font-size:17px}
+.faq summary:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.faq details p{color:var(--muted);margin-top:10px}
+
+.final .wrap{padding-block:24px 72px}
+.final-in{background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:40px clamp(20px,4vw,56px);display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+.final h2{font-size:clamp(24px,3vw,34px);max-width:20ch}
+.final p{color:var(--muted);margin-top:8px}
+footer .wrap{padding-block:0 32px;font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 20px}
+footer a{color:var(--muted)}
+.agree{font-size:13px;color:var(--muted);margin-top:12px}
+.agree a{color:var(--muted)}
+
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;gap:56px;padding-block:16px 64px}
+  .pains,.lessons{grid-template-columns:1fr}
+  .kit{grid-template-columns:repeat(2,1fr)}
+  .author{grid-template-columns:1fr;gap:28px}
+  .portrait{max-width:340px}
+  .sticky{margin-right:-6px;font-size:22px}
+  section.block .wrap{padding-block:48px}
+}
+@media (max-width:420px){
+  .bars li{grid-template-columns:96px 1fr 62px;gap:8px;font-size:14px}
+  .month{padding:22px}
+}
+</style>
+
+<div class="top">
+  <div class="wrap">
+    <p class="logo">CFO <span>власного гаманця</span></p>
+    <a href="#program">Програма</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <p class="tag">Міні-курс · 6 уроків · 477 грн</p>
+      <h1>Для тих, хто заробляє, але не розуміє, <span class="mark">куди зникають гроші</span></h1>
+      <p class="lead">Фінансовий директор з 20-річним досвідом покаже, як вести сімейний бюджет так само спокійно і зрозуміло, як фінанси компанії.</p>
+      <div class="buy">
+        <!-- Замініть href на посилання оплати WayForPay -->
+        <a class="btn" href="#buy" id="buy-top">Хочу навести лад</a>
+        <p class="price">477 грн<small>один платіж, доступ назавжди</small></p>
+      </div>
+      <div class="byline"><img src="olga-face.jpg" alt="" width="44" height="44"><span><b>Ольга Травенікова</b> · фінансовий директор, ACCA, MBA</span></div>
+    </div>
+
+    <aside class="month" aria-label="Приклад: куди пішли гроші родини за місяць">
+      <h3>Жовтень: куди пішли гроші</h3>
+      <p class="sub">Родина з двома дітьми, дохід 32 000 грн</p>
+      <ul class="bars">
+        <li><span>Житло</span><span class="bar"><i style="width:100%"></i></span><b>9 000</b></li>
+        <li><span>Їжа</span><span class="bar"><i style="width:94%"></i></span><b>8 500</b></li>
+        <li class="hot"><span>Дрібниці</span><span class="bar"><i style="width:52%"></i></span><b>4 700</b></li>
+        <li><span>Діти</span><span class="bar"><i style="width:47%"></i></span><b>4 200</b></li>
+        <li><span>Транспорт</span><span class="bar"><i style="width:29%"></i></span><b>2 600</b></li>
+        <li><span>Кредит</span><span class="bar"><i style="width:28%"></i></span><b>2 500</b></li>
+      </ul>
+      <div class="sum"><span>Витрачено 31 500 грн</span><strong>Залишок: 500 грн</strong></div>
+      <p class="sticky">4 700 на «дрібниці»?! Оце так сюрприз</p>
+    </aside>
+  </div>
+</header>
+
+<main>
+  <section class="block">
+    <div class="wrap">
+      <p class="tag">Знайомо?</p>
+      <h2>Гроші приходять — і так само тихо зникають</h2>
+      <div class="pains">
+        <div><p class="q">«До зарплати ще тиждень, а на картці нуль»</p><p>Дохід нормальний, але кінець місяця щоразу виходить напруженим.</p></div>
+        <div><p class="q">«Відкладу з того, що залишиться»</p><p>Тільки не залишається нічого, і накопичення так і не починаються.</p></div>
+        <div><p class="q">«Вересень знову застав зненацька»</p><p>Школа, свята, відпустка щоразу стають сюрпризом і закінчуються розстрочкою.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="program" style="padding-top:0">
+    <div class="wrap">
+      <p class="tag">Програма</p>
+      <h2>Шість кроків від «не знаю, куди пішло» до власної системи</h2>
+      <ol class="lessons">
+        <li><span class="n">1</span><h3>Фінансова діагностика</h3><p>Аудит витрат за 3 місяці, баланс родини і запас міцності.</p></li>
+        <li><span class="n">2</span><h3>Облік за 15 хвилин на тиждень</h3><p>Особистий P&amp;L і календар грошей без провалів до зарплати.</p></li>
+        <li><span class="n">3</span><h3>Бюджет як у компанії</h3><p>Розподіл доходу, сезонні витрати на рік уперед, план-факт.</p></li>
+        <li><span class="n">4</span><h3>Подушка безпеки</h3><p>Скільки місяців резерву потрібно саме вам і де його тримати.</p></li>
+        <li><span class="n">5</span><h3>Борги та розстрочки</h3><p>Реальна ціна «0%», порядок погашення, безпечне навантаження.</p></li>
+        <li><span class="n">6</span><h3>Від заощаджень до капіталу</h3><p>Цілі з сумою і датою та щомісячний фінансовий день.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="format">
+        <div class="format-in">
+          <p class="tag">Формат</p>
+          <h2>Без відео і без розкладу — у зручний для вас вечір</h2>
+          <p class="intro">Кожен урок — це презентація на 20–30 хвилин і таблиця з готовими формулами. Ви вписуєте свої цифри, а таблиця рахує решту.</p>
+          <div class="kit">
+            <div><strong>6</strong><span>презентацій для самостійного вивчення</span></div>
+            <div><strong>6</strong><span>Excel-шаблонів з формулами</span></div>
+            <div><strong>6</strong><span>практичних завдань по 40–60 хвилин</span></div>
+            <div><strong>1</strong><span>приклад родини через увесь курс</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <p class="tag">Автор</p>
+      <h2>Ольга Травенікова</h2>
+      <div class="author">
+        <div class="portrait">
+          <img src="olga.jpg" alt="Ольга Травенікова, автор курсу" width="900" height="1355" loading="lazy">
+          <p class="sticky-s">20+ років<br>у фінансах</p>
+        </div>
+        <div class="who-txt">
+          <p><b>Фінансовий директор і аудитор з понад 20 роками досвіду.</b> Щодня керує фінансами компаній у Польщі, Німеччині та Франції.</p>
+          <p>У курсі — ті самі інструменти, якими користуються фінансові директори, тільки спрощені для сімейного бюджету: без складних термінів і з готовими таблицями.</p>
+          <div class="creds"><span>ACCA</span><span>MBA</span><span>UCGA</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <p class="tag">Питання</p>
+      <h2>Часті запитання</h2>
+      <div class="faq">
+        <details><summary>Мені потрібні знання з фінансів?</summary><p>Ні. Курс розрахований на людей без фінансової освіти. Усе пояснено на прикладі звичайної родини.</p></details>
+        <details><summary>Скільки часу це займе?</summary><p>Один урок із завданням — приблизно година на тиждень. Увесь курс можна пройти за 6 тижнів.</p></details>
+        <details><summary>У мене невеликий дохід. Курс підійде?</summary><p>Так. Система працює і з доходом 20 000 грн, і з 200 000 грн. Що менший запас, то важливіше бачити кожну гривню.</p></details>
+        <details><summary>Чи потрібен Excel?</summary><p>Шаблони працюють в Excel і відкриваються в Google Таблицях, тож підійде будь-яка з цих програм.</p></details>
+        <details><summary>Ви даєте інвестиційні поради?</summary><p>Ні. Урок 6 пояснює, як працюють базові інструменти накопичення, але не радить, що купувати.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <div class="final-in">
+        <div>
+          <h2>Наведіть лад у сімейних грошах за 6 тижнів</h2>
+          <p>477 грн · 6 уроків · шаблони залишаються у вас</p>
+        </div>
+        <!-- Замініть href на посилання оплати WayForPay -->
+        <div>
+          <a class="btn" href="#buy" id="buy">Купити курс</a>
+          <p class="agree">Оплачуючи, ви приймаєте умови <a href="terms.html">публічної оферти</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><a href="terms.html">Публічна оферта</a><a href="refund.html">Повернення коштів</a><a href="contacts.html">Контакти</a><span>© 2026 ФОП Травенікова Ольга Вікторівна, ІПН 2846903923</span></div>
+</footer>
